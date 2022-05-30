@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { JoinRoom } from "../JoinRoom/JoinRoom";
 import { ChatRoom } from "../ChatRoom/ChatRoom";
 import { Routes, Route } from "react-router-dom";
+import { Container } from "@mui/material";
 import { io } from "socket.io-client";
 
 export const App = () => {
@@ -13,7 +14,7 @@ export const App = () => {
 
 
   return (
-    <div>
+    <Container maxWidth="sm">
       <Routes>
         <Route
           path="/"
@@ -42,6 +43,6 @@ export const App = () => {
           }
         />
       </Routes>
-    </div>
+    </Container>
   );
 };
