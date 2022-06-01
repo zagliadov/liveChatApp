@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ActionType } from "../../state/actions";
 import { AppContext } from "../../state/AppContext";
@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 
 export const JoinRoom = ({ socket }) => {
-  const [{ user, name, room }, dispatch] = useContext(AppContext);
+  const [{ name, room }, dispatch] = useContext(AppContext);
   let navigate = useNavigate();
 
   const joinRoom = () => {
@@ -23,6 +23,7 @@ export const JoinRoom = ({ socket }) => {
         payload: data,
       });
     });
+    socket.on('greeting_message', (message) => console.log(message))
     navigate("/chat");
   };
 
@@ -39,6 +40,11 @@ export const JoinRoom = ({ socket }) => {
       payload: e.target.value,
     });
   };
+
+  useEffect(() => {
+    localStorage.removeItem('name');
+    localStorage.removeItem('room');
+  }, [])
 
   return (
     <Box

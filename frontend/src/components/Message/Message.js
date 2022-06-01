@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect } from "react";
 
-export const Message = ({messageReceiver}) => {
+export const Message = ({receivedMessage}) => {
+
+
+  useEffect(() => {
+    console.log(receivedMessage);
+  }, [receivedMessage]);
 
   return (
     <div>
       <h2>Message: </h2>
-      <p>{messageReceiver && messageReceiver}</p>
+      <p>{receivedMessage && receivedMessage}</p>
     </div>
-  )
-}
+  );
+};

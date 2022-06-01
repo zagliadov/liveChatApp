@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from "react";
+import React, { useContext, useCallback, useState } from "react";
 import { AppContext } from "../../state/AppContext";
 import { ActionType } from "../../state/actions";
 import { useEffect } from "react";
@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { Message } from "../Message/Message";
 
 export const ChatRoom = ({ socket }) => {
-  const [{ user }, dispatch] = useContext(AppContext);
+  const [{ user = {} }, dispatch] = useContext(AppContext);
+  const [receivedMessage, setReceivedMessage] = useState('');
   const navigate = useNavigate();
-  const [messageReceiver, setMessageReceiver] = useState("");
 
   let name = localStorage.getItem("name"),
     room = localStorage.getItem("room");
@@ -36,6 +36,7 @@ export const ChatRoom = ({ socket }) => {
         payload: data,
       });
     });
+    socket.on('greeting_message', (message) => console.log(message))
     navigate("/chat");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
@@ -49,12 +50,11 @@ export const ChatRoom = ({ socket }) => {
     console.log(user, name, room);
   };
 
-  useEffect(() => {}, [socket, setMessageReceiver]);
 
   return (
     <>
-      <Form socket={socket} setMessageReceiver={setMessageReceiver} />
-      <Message messageReceiver={messageReceiver} />
+      <Form socket={socket} setReceivedMessage={setReceivedMessage} />
+      <Message receivedMessage={receivedMessage} />
       <button onClick={() => handleClick()}>click</button>
     </>
   );

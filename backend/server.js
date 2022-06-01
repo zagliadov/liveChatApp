@@ -24,6 +24,10 @@ io.on("connection", (socket) => {
       name: name,
       room: room,
     });
+    socket.emit("greeting_message", `Пользователь ${name} подключен`);
+    socket.on("send_message", ({message, room}) => {
+      socket.to(room).emit("receive_message", (message))
+    })
   });
 });
 

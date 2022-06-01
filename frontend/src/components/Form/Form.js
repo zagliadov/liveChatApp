@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AppContext } from "../../state/AppContext";
+import { ActionType } from "../../state/actions";
 
-export const Form = ({ socket, setMessageReceiver }) => {
-  const [{ user, room }, dispatch] = useContext(AppContext);
+export const Form = ({ socket, setReceivedMessage }) => {
 
+  const [{ room }, dispatch] = useContext(AppContext);
   const [message, setMessage] = useState("");
 
   const sendMessage = () => {
@@ -14,9 +15,9 @@ export const Form = ({ socket, setMessageReceiver }) => {
 
   useEffect(() => {
     socket.on("receive_message", (msg) => {
-      setMessageReceiver(msg);
+      setReceivedMessage(msg)
     });
-  }, [socket, setMessageReceiver, setMessage, message]);
+  }, [socket, setReceivedMessage]);
 
 
   return (
