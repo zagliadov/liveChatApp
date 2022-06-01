@@ -1,72 +1,78 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { ActionType } from "../../state/actions";
+import { AppContext } from "../../state/AppContext";
 import {
   FormControl,
   Button,
   InputLabel,
   Input,
   FormHelperText,
-  Box
+  Box,
 } from "@mui/material";
 
-export const JoinRoom = ({
-  user,
-  setUser,
-  room,
-  name,
-  setRoom,
-  setName,
-  socket,
-}) => {
+export const JoinRoom = ({ socket }) => {
+  const [{ user, name, room }, dispatch] = useContext(AppContext);
   let navigate = useNavigate();
 
   const joinRoom = () => {
+    if (!name || !room) return;
     socket.emit("user_joined", { name, room }, (data) => {
-      if (typeof data === "string") {
-        console.error(data);
-      } else {
-        setUser({
-          name: name,
-          room: room,
-          id: data.userId,
-        });
-        console.log(data);
-        socket.on("new_message", (data) => {
-          console.log(data, "hello");
-        });
-        navigate("/chat");
-      }
+      dispatch({
+        type: ActionType.SET_USER,
+        payload: data,
+      });
+    });
+    navigate("/chat");
+  };
+
+  const inputName = (e) => {
+    dispatch({
+      type: ActionType.SET_NAME,
+      payload: e.target.value,
     });
   };
+
+  const inputRoom = (e) => {
+    dispatch({
+      type: ActionType.SET_ROOM,
+      payload: e.target.value,
+    });
+  };
+
   return (
-    <Box sx={{
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      <FormControl>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
+        paddingTop: "100px",
+      }}
+    >
+      <FormControl sx={{ padding: "10px" }}>
         <InputLabel htmlFor="my-name">Enter your name</InputLabel>
         <Input
           id="my-name"
           aria-describedby="my-helper-text"
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => inputName(e)}
         />
         <FormHelperText id="my-helper-text">
           The name you enter will be visible to other users.
         </FormHelperText>
       </FormControl>
 
-      <FormControl>
+      <FormControl sx={{ padding: "10px" }}>
         <InputLabel htmlFor="room">Enter room name</InputLabel>
         <Input
           id="room"
           aria-describedby="my-helper-text"
-          onChange={(e) => setRoom(e.target.value)}
+          onChange={(e) => inputRoom(e)}
         />
         <FormHelperText id="my-helper-text">
           Enter the name of the room to create or connect
         </FormHelperText>
       </FormControl>
-      <Button onClick={joinRoom} variant="outlined">
+      <Button onClick={() => joinRoom()} variant="outlined">
         Join room
       </Button>
     </Box>

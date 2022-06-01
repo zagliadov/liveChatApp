@@ -5,7 +5,7 @@ export const Message = ({messageReceiver}) => {
   return (
     <div>
       <h2>Message: </h2>
-      <p>{messageReceiver}</p>
+      <p>{messageReceiver && messageReceiver}</p>
     </div>
   )
 }
